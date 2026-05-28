@@ -11,6 +11,7 @@
 <div class="site-shell">
 
   <nav class="navbar" role="navigation" aria-label="Terminal Navigation">
+    <a href="reports.html" style="text-decoration: none;"><button type="button">INCIDENT LOGS [104-C]</button></a>
     <button type="button" onclick="view('world')">METRIC LEDGER</button>
     <button type="button" onclick="view('agents')">FIELD ASSETS</button>
     <button type="button" onclick="view('memory')">UNRENDERED ARCHIVE</button>
@@ -336,5 +337,19 @@ window.onload = () => {
 };
 </script>
 
+<script src="/socket.io/socket.io.js"></script>
+<script src="app.js"></script> 
 </body>
+
+<!-- The Terminal Footer -->
+<footer class="terminal-footer">
+  <div class="footer-meta">
+    <span>LOC: ALDERSYTH_CONCOURSE_ALPHA</span>
+    <span>MICA_THICKNESS: <span class="pulse-text">14.82mm</span></span>
+    <span>EPOCH: UNFILED // CURRENT</span>
+  </div>
+  <div class="footer-notice">
+    PROPERTY OF THE DEPARTMENT OF UNFINISHED EVENTS. UNAUTHORIZED RENDERING OF EMPTY ARCHITECTURAL SPACES WILL TRIGGER AN IMMEDIATE AUDIT SEQUENCE. BACKDATE ALL LIABILITY FORMS TO COMPENSATE FOR EXISTING EXISTENTIAL DEBT.
+  </div>
+</footer>
 </html>

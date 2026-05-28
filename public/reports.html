@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SUBSTRATE v12 // RECOVERY LEDGER</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="site-shell">
+
+  <nav class="navbar" role="navigation" aria-label="Terminal Navigation">
+    <a href="index.html" style="text-decoration: none;"><button type="button">← SECTOR MAPPER</button></a>
+    <button type="button" onclick="filterRegistry('all')">ALL FILED DOCUMENTS</button>
+    <button type="button" onclick="filterRegistry('pending')">UNRENDERED DRIFT</button>
+    <button type="button" onclick="filterRegistry('reconciled')">IRON JOURNAL ASSIGNMENTS</button>
+    <button type="button" onclick="toggleVisor()" class="visor-toggle">POLARIZED VISOR</button>
+  </nav>
+
+  <div id="micaBlock" class="mica-block"></div>
+
+  <h2 class="title">SUBSTRATE // ADMINISTRATIVE FILES // FORM 104-C INCIDENT REGISTRY</h2>
+
+  <div class="panel-grid">
+
+    <div class="panel">
+      <h3>LOG NEW REALITY OMISSION [FORM 104-C]</h3>
+      <form id="incidentFilingForm" onsubmit="processNewReport(event)">
+        
+        <div class="meterBlock" style="margin-top: 0; width: 100%;">
+          <label for="anomalySector">Target Sector / Spatial Anchor</label>
+          <input type="text" id="anomalySector" class="validation-field" style="width: 100%; margin-bottom: 12px;" placeholder="e.g., SECTOR_0_TRENCH" required>
+          
+          <label for="driftDuration">Unrendered Duration (Seconds of Lag)</label>
+          <input type="number" id="driftDuration" class="validation-field" style="width: 100%; margin-bottom: 12px;" placeholder="e.g., 10800" required>
+          
+          <label for="incidentDetails">Observed Structural Contradiction</label>
+          <textarea id="incidentDetails" class="validation-field" style="width: 100%; height: 80px; margin-bottom: 12px; resize: none;" placeholder="Describe architectural empty spaces or sensory desync parameters..." required></textarea>
+        </div>
+
+        <button type="submit" style="width: 100%;">COMMIT INCIDENT TO BLANK JOURNAL</button>
+      </form>
+      <p class="hint">Filing an intentional omission forces localized reality thinning loops to register with the mainframe database, resetting baseline tracking metrics.</p>
+    </div>
+
+    <div class="panel">
+      <h3>SUB-ROUTINE BACKLOG MATRIX</h3>
+      <div class="poi-registry" id="registryBox">
+        
+        <div class="poi-node warningPulse" data-status="pending">
+          <span class="node-id">FORM-104C-09</span>
+          <span class="node-loc">Transit Loop Delta // Mercury Trench Leakage</span>
+          <span class="node-status">PENDING PURGE</span>
+        </div>
+
+        <div class="poi-node stableGlow" data-status="reconciled">
+          <span class="node-id">FORM-104C-08</span>
+          <span class="node-loc">Depot 44-A // Retroactive Baseline Calibration</span>
+          <span class="node-status">RECONCILED</span>
+        </div>
+
+        <div class="poi-node glitch-hover" data-status="pending">
+          <span class="node-id">FORM-104C-07</span>
+          <span class="node-loc">Echo Runs // 3 Unrendered Hours Residual</span>
+          <span class="node-status">MICA EXCEPTION</span>
+        </div>
+
+      </div>
+      <p class="hint">Items marked as MICA EXCEPTION require immediate cognitive anchoring via field asset intervention protocols.</p>
+    </div>
+
+    <div class="panel wide">
+      <h3>LEDGER PROCESSING SYSTEM ARCHIVE</h3>
+      <div id="reportTerminalLog" class="log">[SYSTEM] REPORT UTILITY SUBSYSTEM INITIALIZED. STANDING BY FOR ARCHIVAL WRITE INJECTIONS...</div>
+      
+      <div class="controls" style="margin-top: 15px;">
+        <button type="button" onclick="exportLedgerData()">EXPORT HARD TRANSLATION MANIFEST</button>
+        <button type="button" onclick="clearLocalLogs()">PURGE CACHED SESSION DEBT</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const logBox = document.getElementById('reportTerminalLog');
+
+  function appendReportLog(tag, msg) {
+    const ts = new Date().toISOString().split('T')[1].substring(0, 8);
+    logBox.innerHTML += `\n[${ts}] &lt;${tag}&gt; ${msg}`;
+    logBox.scrollTop = logBox.scrollHeight;
+  }
+
+  function toggleVisor() {
+    document.querySelector('.site-shell').classList.toggle('visor-active');
+    appendReportLog('VISOR', 'POLARIZED SPECTRUM TOGGLED');
+  }
+
+  function filterRegistry(status) {
+    const items = document.querySelectorAll('.poi-node');
+    items.forEach(item => {
+      if (status === 'all' || item.getAttribute('data-status') === status) {
+        item.style.display = 'flex';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+    appendReportLog('FILTER', `REGISTRY BACKLOG ROUTED TO CLASSIFICATION: [${status.toUpperCase()}]`);
+  }
+
+  function processNewReport(e) {
+    e.preventDefault();
+    const sector = document.getElementById('anomalySector').value.toUpperCase();
+    const duration = document.getElementById('driftDuration').value;
+    const desc = document.getElementById('incidentDetails').value;
+    
+    // Generate new DOM node matching brutalist aesthetic
+    const newEntry = document.createElement('div');
+    newEntry.className = 'poi-node warningPulse ledger-flash';
+    newEntry.setAttribute('data-status', 'pending');
+    
+    const randomID = Math.floor(Math.random() * 900 + 100);
+    newEntry.innerHTML = `
+      <span class="node-id">FORM-104C-${randomID}</span>
+      <span class="node-loc">${sector} // ${duration}s LAG</span>
+      <span class="node-status">PENDING PURGE</span>
+    `;
+    
+    document.getElementById('registryBox').prepend(newEntry);
+    appendReportLog('FILE_SYS', `COMMITTED RECORD FORM-104C-${randomID}: ${desc.substring(0, 45)}...`);
+    
+    // Reset Form Input
+    document.getElementById('incidentFilingForm').reset();
+  }
+
+  function exportLedgerData() {
+    appendReportLog('CRITICAL', 'DEPT MANIFEST EXPORT REJECTED // HARD LINE DISCONNECTED FROM CENTRAL CORE');
+  }
+
+  function clearLocalLogs() {
+    logBox.innerHTML = '[SYSTEM] SESSION PURGED BY ADMINISTRATIVE ORDER. BASELINE STEADY.';
+  }
+</script>
+</body>
+
+<!-- The Terminal Footer -->
+<footer class="terminal-footer">
+  <div class="footer-meta">
+    <span>LOC: ALDERSYTH_CONCOURSE_ALPHA</span>
+    <span>MICA_THICKNESS: <span class="pulse-text">14.82mm</span></span>
+    <span>EPOCH: UNFILED // CURRENT</span>
+  </div>
+  <div class="footer-notice">
+    PROPERTY OF THE DEPARTMENT OF UNFINISHED EVENTS. UNAUTHORIZED RENDERING OF EMPTY ARCHITECTURAL SPACES WILL TRIGGER AN IMMEDIATE AUDIT SEQUENCE. BACKDATE ALL LIABILITY FORMS TO COMPENSATE FOR EXISTING EXISTENTIAL DEBT.
+  </div>
+</footer>
+</html>
