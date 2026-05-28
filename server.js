@@ -9,15 +9,12 @@ const io = new Server(server);
 
 app.use(express.static("public"));
 
-/* -----------------------------
-   STATE PERSISTENCE
------------------------------- */
+/* ---------------- STATE ---------------- */
 
 function loadState() {
   try {
-    const data = fs.readFileSync("state.json", "utf-8");
-    return JSON.parse(data);
-  } catch (e) {
+    return JSON.parse(fs.readFileSync("state.json", "utf-8"));
+  } catch {
     return null;
   }
 }
@@ -25,10 +22,6 @@ function loadState() {
 function saveState(state) {
   fs.writeFileSync("state.json", JSON.stringify(state, null, 2));
 }
-
-/* -----------------------------
-   INITIAL STATE (with restore)
------------------------------- */
 
 const persisted = loadState();
 
@@ -41,130 +34,97 @@ let world = persisted?.world ?? {
 
 let finchMemory = persisted?.finchMemory ?? {
   events: [],
-  themes: {
-    recursion: 0,
-    collapse: 0,
-    drift: 0
-  }
+  themes: { recursion: 0, collapse: 0, drift: 0 }
 };
 
-/* -----------------------------
-   AGENT LANGUAGE MODELS
------------------------------- */
+/* ---------------- AGENTS ---------------- */
 
 function Finch(world) {
-  return `Finch: The system is dissolving again. Corruption at ${world.corruption}. I suggest allowing degradation to continue to reveal underlying structure.`;
+  return `Finch: Corruption at ${world.corruption}. Let it degrade.`;
 }
 
 function Caso(world) {
-  return `Caso: Stability is degrading. Immediate reinforcement is required or structural collapse will occur.`;
+  return `Caso: Stability required. Reinforce immediately.`;
 }
 
 function Vance(world) {
-  return `Vance: Observation indicates contradictory system signals. Collapse and stabilisation processes are active simultaneously.`;
+  return `Vance: Contradictions detected in system state.`;
 }
 
-/* -----------------------------
-   CONSENSUS ENGINE
------------------------------- */
+/* ---------------- CONSENSUS ---------------- */
 
-function extractConsensus(transcript) {
-  const text = transcript.join(" ").toLowerCase();
+function deltaEngine(text) {
+  let d = { stability: 0, corruption: 0, coherence: 0 };
 
-  let delta = {
-    stability: 0,
-    corruption: 0,
-    coherence: 0
-  };
-
-  if (text.includes("dissolving") || text.includes("degradation")) {
-    delta.corruption += 3;
-    delta.stability -= 2;
+  if (text.includes("corruption") || text.includes("degrade")) {
+    d.corruption += 3;
+    d.stability -= 2;
   }
 
-  if (text.includes("stability") || text.includes("reinforcement")) {
-    delta.stability += 3;
-    delta.coherence += 2;
+  if (text.includes("stability") || text.includes("reinforce")) {
+    d.stability += 3;
+    d.coherence += 2;
   }
 
-  if (text.includes("contradictory") || text.includes("simultaneously")) {
-    delta.coherence -= 1;
-    delta.corruption += 1;
+  if (text.includes("contradictions")) {
+    d.coherence -= 1;
+    d.corruption += 1;
   }
 
-  return delta;
+  return d;
 }
 
-/* -----------------------------
-   APPLY DELTA
------------------------------- */
-
-function applyDelta(delta) {
-  world.stability += delta.stability;
-  world.corruption += delta.corruption;
-  world.coherence += delta.coherence;
+function apply(d) {
+  world.stability += d.stability;
+  world.corruption += d.corruption;
+  world.coherence += d.coherence;
 
   for (const k in world) {
     world[k] = Math.max(0, Math.min(100, world[k]));
   }
 }
 
-/* -----------------------------
-   MAIN LOOP
------------------------------- */
+/* ---------------- UI STATE MAPPING ---------------- */
+
+function getUIState(world) {
+  if (world.corruption > 70) return "corrupt";
+  if (world.stability > 75) return "stable";
+  if (world.coherence < 30) return "fractured";
+  return "normal";
+}
+
+/* ---------------- LOOP ---------------- */
 
 function tick() {
-  const finchMsg = Finch(world);
-  const casoMsg = Caso(world);
-  const vanceMsg = Vance(world);
+  const msgs = [Finch(world), Caso(world), Vance(world)];
 
-  const transcript = [finchMsg, casoMsg, vanceMsg];
+  const delta = deltaEngine(msgs.join(" "));
+  apply(delta);
 
-  const delta = extractConsensus(transcript);
+  const uiState = getUIState(world);
 
-  applyDelta(delta);
-
-  /* broadcast world */
   io.emit("world:update", world);
 
-  /* broadcast agent dialogue */
-  transcript.forEach(msg => {
-    io.emit("story:event", {
-      type: "agent",
-      msg
-    });
-  });
+  io.emit("ui:state", { state: uiState });
 
-  /* system interpretation */
+  msgs.forEach(m =>
+    io.emit("story:event", { type: "agent", msg: m })
+  );
+
   io.emit("story:event", {
     type: "system",
-    msg: `SYSTEM Δ → Stability:${delta.stability} Corruption:${delta.corruption} Coherence:${delta.coherence}`
+    msg: `Δ S:${delta.stability} C:${delta.corruption} H:${delta.coherence}`
   });
 
-  /* -----------------------------
-     PERSISTENCE WRITE (IMPORTANT)
-  ------------------------------ */
-
-  saveState({
-    world,
-    finchMemory
-  });
+  saveState({ world, finchMemory });
 }
 
 setInterval(tick, 1500);
 
-/* -----------------------------
-   SOCKET CONNECTION
------------------------------- */
-
-io.on("connection", (socket) => {
+io.on("connection", socket => {
   socket.emit("world:update", world);
 });
 
-/* -----------------------------
-   START SERVER
------------------------------- */
-
 server.listen(3000, () => {
-  console.log("SUBSTRATE v11 ONLINE (PERSISTENT)");
+  console.log("SUBSTRATE v11 CLEAN ARCHITECTURE ONLINE");
 });

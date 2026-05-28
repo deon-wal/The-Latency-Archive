@@ -1,0 +1,87 @@
+
+/* ---------------- BASE ---------------- */
+
+body {
+    margin: 0;
+    font-family: monospace;
+    background: #050607;
+    color: #b7ffda;
+    transition: all 0.6s ease;
+  }
+  
+  /* ---------------- NAV ---------------- */
+  
+  .navbar {
+    display: flex;
+    gap: 12px;
+    padding: 10px;
+    border-bottom: 1px solid #1aff88;
+    background: rgba(0,0,0,0.7);
+  }
+  
+  /* ---------------- PANELS ---------------- */
+  
+  .panel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 10px;
+    gap: 10px;
+  }
+  
+  .panel {
+    border: 1px solid #1aff88;
+    padding: 10px;
+    background: rgba(0,0,0,0.4);
+  }
+  
+  /* ---------------- LOG ---------------- */
+  
+  .log {
+    height: 420px;
+    overflow-y: auto;
+  }
+  
+  /* ---------------- STATES (KEY FEATURE) ---------------- */
+  
+  body.state-normal {
+    background: #050607;
+  }
+  
+  body.state-stable {
+    background: radial-gradient(circle, #0b2a1a, #050607);
+    box-shadow: inset 0 0 80px rgba(0,255,120,0.1);
+  }
+  
+  body.state-corrupt {
+    background: radial-gradient(circle, #2a0b0b, #050607);
+    filter: contrast(1.2) saturate(1.4);
+    animation: glitch 1.2s infinite;
+  }
+  
+  body.state-fractured {
+    background: repeating-linear-gradient(
+      45deg,
+      #050607,
+      #050607 10px,
+      #0a0a0a 10px,
+      #050607 20px
+    );
+  }
+  
+  /* ---------------- ANIM ---------------- */
+  
+  @keyframes glitch {
+    0% { transform: translate(0,0); }
+    20% { transform: translate(-1px,1px); }
+    40% { transform: translate(1px,-1px); }
+    60% { transform: translate(-2px,1px); }
+    80% { transform: translate(1px,2px); }
+    100% { transform: translate(0,0); }
+  }
+  
+  /* ---------------- TEXT ---------------- */
+  
+  .agent { color: #ffb86b; }
+  .system { color: #7affff; }
+  
+  .hidden { display: none; }

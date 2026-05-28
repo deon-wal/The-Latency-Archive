@@ -2,264 +2,40 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>SUBSTRATE v11 — Persistent Language Simulation</title>
+<title>SUBSTRATE v11</title>
 
-<style>
-body {
-  margin: 0;
-  font-family: monospace;
-  background: #050607;
-  color: #b7ffda;
-}
-
-/* -----------------------------
-   NAV BAR
------------------------------- */
-
-.navbar {
-  display: flex;
-  gap: 12px;
-  padding: 10px;
-  border-bottom: 1px solid #1aff88;
-  background: rgba(0,0,0,0.8);
-  position: sticky;
-  top: 0;
-}
-
-.navlink {
-  cursor: pointer;
-  padding: 4px 8px;
-  border: 1px solid #1aff88;
-  color: #b7ffda;
-}
-
-.navlink:hover {
-  background: #1aff88;
-  color: black;
-}
-
-/* -----------------------------
-   LAYOUT
------------------------------- */
-
-.container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  padding: 10px;
-}
-
-.panel {
-  border: 1px solid #1aff88;
-  padding: 10px;
-  background: rgba(0,0,0,0.4);
-}
-
-/* -----------------------------
-   LOG SYSTEM
------------------------------- */
-
-.log {
-  height: 420px;
-  overflow-y: auto;
-  font-size: 12px;
-  border-top: 1px solid #1aff88;
-  padding-top: 6px;
-}
-
-.agent { color: #ffb86b; }
-.system { color: #7affff; }
-.hidden { display: none; }
-
-/* -----------------------------
-   BUTTONS
------------------------------- */
-
-button {
-  background: transparent;
-  border: 1px solid #1aff88;
-  color: #b7ffda;
-  padding: 4px 8px;
-  cursor: pointer;
-  margin-right: 6px;
-}
-
-button:hover {
-  background: #1aff88;
-  color: black;
-}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-<!-- NAVIGATION -->
 <div class="navbar">
-  <div class="navlink" onclick="view('world')">WORLD</div>
-  <div class="navlink" onclick="view('agents')">AGENTS</div>
-  <div class="navlink" onclick="view('memory')">MEMORY</div>
-  <div class="navlink" onclick="view('diagnostics')">DIAGNOSTICS</div>
+  <div onclick="view('world')">WORLD</div>
+  <div onclick="view('agents')">AGENTS</div>
+  <div onclick="view('memory')">MEMORY</div>
+  <div onclick="view('diagnostics')">DIAGNOSTICS</div>
 </div>
 
-<h3 style="text-align:center;">
-SUBSTRATE v11 — LIVING LANGUAGE SIMULATION
-</h3>
+<h2>SUBSTRATE v11 // SIMULATION CORE</h2>
 
-<!-- WORLD VIEW -->
-<div id="worldView" class="container">
-
+<div id="worldView" class="panel-grid">
   <div class="panel">
-    <h4>WORLD STATE</h4>
+    <h3>WORLD STATE</h3>
     <pre id="world"></pre>
   </div>
 
   <div class="panel">
-    <h4>LIVE CONTROLS</h4>
-
-    <button onclick="pause()">PAUSE STREAM</button>
-    <button onclick="resume()">RESUME</button>
-    <button onclick="clearLog()">CLEAR LOG</button>
-
+    <h3>STREAM</h3>
     <div class="log" id="log"></div>
   </div>
-
 </div>
 
-<!-- AGENTS VIEW -->
-<div id="agentsView" class="container hidden">
-  <div class="panel">
-    <h4>AGENT OVERVIEW</h4>
-    <pre>
-Finch  → entropy / dissolution
-Caso   → stability enforcement
-Vance  → contradiction detection
-    </pre>
-  </div>
-
-  <div class="panel">
-    <h4>BEHAVIOUR NOTES</h4>
-    <pre>
-- Finch increases corruption signals
-- Caso reinforces stability signals
-- Vance detects systemic inconsistency
-    </pre>
-  </div>
-</div>
-
-<!-- MEMORY VIEW -->
-<div id="memoryView" class="container hidden">
-  <div class="panel">
-    <h4>PERSISTENCE LAYER</h4>
-    <pre>
-State is saved to:
-- world
-- finchMemory
-
-Stored locally on server disk (state.json)
-    </pre>
-  </div>
-
-  <div class="panel">
-    <h4>IMPLICATION</h4>
-    <pre>
-System evolves across restarts.
-Finch retains historical bias.
-Narrative drift accumulates.
-    </pre>
-  </div>
-</div>
-
-<!-- DIAGNOSTICS VIEW -->
-<div id="diagnosticsView" class="container hidden">
-  <div class="panel">
-    <h4>SYSTEM DIAGNOSTICS</h4>
-    <pre>
-Socket.io → ACTIVE
-Tick loop → 1500ms
-Persistence → ENABLED
-Agent model → LANGUAGE INTERPRETER
-    </pre>
-  </div>
-
-  <div class="panel">
-    <h4>HEALTH</h4>
-    <pre id="worldCopy"></pre>
-  </div>
-</div>
+<div id="agentsView" class="panel-grid hidden"></div>
+<div id="memoryView" class="panel-grid hidden"></div>
+<div id="diagnosticsView" class="panel-grid hidden"></div>
 
 <script src="/socket.io/socket.io.js"></script>
-
-<script>
-const socket = io();
-
-let streamPaused = false;
-
-/* -----------------------------
-   NAVIGATION
------------------------------- */
-
-function view(v) {
-  document.getElementById("worldView").classList.add("hidden");
-  document.getElementById("agentsView").classList.add("hidden");
-  document.getElementById("memoryView").classList.add("hidden");
-  document.getElementById("diagnosticsView").classList.add("hidden");
-
-  document.getElementById(v + "View").classList.remove("hidden");
-}
-
-/* -----------------------------
-   WORLD STATE
------------------------------- */
-
-socket.on("world:update", (w) => {
-  document.getElementById("world").innerText =
-    JSON.stringify(w, null, 2);
-
-  document.getElementById("worldCopy").innerText =
-    JSON.stringify(w, null, 2);
-});
-
-/* -----------------------------
-   STREAM CONTROL
------------------------------- */
-
-function pause() {
-  streamPaused = true;
-}
-
-function resume() {
-  streamPaused = false;
-}
-
-function clearLog() {
-  document.getElementById("log").innerHTML = "";
-}
-
-/* -----------------------------
-   LIVE STREAM
------------------------------- */
-
-socket.on("story:event", (e) => {
-
-  if (streamPaused) return;
-
-  const div = document.createElement("div");
-
-  if (e.type === "system") div.className = "system";
-  if (e.type === "agent") div.className = "agent";
-
-  div.textContent = e.msg;
-
-  const log = document.getElementById("log");
-  log.appendChild(div);
-
-  if (log.children.length > 80) {
-    log.removeChild(log.firstChild);
-  }
-
-  log.scrollTop = log.scrollHeight;
-});
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
