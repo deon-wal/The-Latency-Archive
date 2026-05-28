@@ -1,87 +1,328 @@
+/* ==========================================================================
+   SUBSTRATE v11 // CORE TERMINAL STYLE SHEET
+   ========================================================================== */
 
-/* ---------------- BASE ---------------- */
+:root {
+  --bg: #0a0a0a;
+  --fg-green: #00ff41;
+  --fg-amber: #ffb000;
+  --border-color: #262626;
+  --border-glow: #ffb00033;
+  --glitch-red: #ff0055;
+  --glitch-cyan: #00ffff;
+  --panel-bg: #0d0d0d;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border-radius: 0 !important; /* Strict Brutalism: No rounded corners */
+}
 
 body {
-    margin: 0;
-    font-family: monospace;
-    background: #050607;
-    color: #b7ffda;
-    transition: all 0.6s ease;
-  }
-  
-  /* ---------------- NAV ---------------- */
-  
-  .navbar {
-    display: flex;
-    gap: 12px;
-    padding: 10px;
-    border-bottom: 1px solid #1aff88;
-    background: rgba(0,0,0,0.7);
-  }
-  
-  /* ---------------- PANELS ---------------- */
-  
-  .panel-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 10px;
-    gap: 10px;
-  }
-  
-  .panel {
-    border: 1px solid #1aff88;
-    padding: 10px;
-    background: rgba(0,0,0,0.4);
-  }
-  
-  /* ---------------- LOG ---------------- */
-  
-  .log {
-    height: 420px;
-    overflow-y: auto;
-  }
-  
-  /* ---------------- STATES (KEY FEATURE) ---------------- */
-  
-  body.state-normal {
-    background: #050607;
-  }
-  
-  body.state-stable {
-    background: radial-gradient(circle, #0b2a1a, #050607);
-    box-shadow: inset 0 0 80px rgba(0,255,120,0.1);
-  }
-  
-  body.state-corrupt {
-    background: radial-gradient(circle, #2a0b0b, #050607);
-    filter: contrast(1.2) saturate(1.4);
-    animation: glitch 1.2s infinite;
-  }
-  
-  body.state-fractured {
-    background: repeating-linear-gradient(
-      45deg,
-      #050607,
-      #050607 10px,
-      #0a0a0a 10px,
-      #050607 20px
-    );
-  }
-  
-  /* ---------------- ANIM ---------------- */
-  
-  @keyframes glitch {
-    0% { transform: translate(0,0); }
-    20% { transform: translate(-1px,1px); }
-    40% { transform: translate(1px,-1px); }
-    60% { transform: translate(-2px,1px); }
-    80% { transform: translate(1px,2px); }
-    100% { transform: translate(0,0); }
-  }
-  
-  /* ---------------- TEXT ---------------- */
-  
-  .agent { color: #ffb86b; }
-  .system { color: #7affff; }
-  
-  .hidden { display: none; }
+  background-color: var(--bg);
+  color: var(--fg-green);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-x: hidden;
+  height: 100vh;
+}
+
+/* CRT Scanline & Flicker Overlay */
+.site-shell {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 4px, 6px 100%;
+  animation: crt-flicker 0.15s infinite;
+}
+
+/* Polarized Visor View Layer */
+.site-shell.visor-active {
+  filter: contrast(190%) grayscale(100%) sepia(25%);
+  color: var(--fg-amber);
+}
+.site-shell.visor-active .meter div {
+  background-color: var(--fg-amber) !important;
+}
+
+/* ==========================================================================
+   NAVIGATION & GLOBAL MECHANICS
+   ========================================================================== */
+
+.navbar {
+  display: flex;
+  border: 2px solid var(--border-color);
+  background: var(--panel-bg);
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.navbar div {
+  padding: 10px 20px;
+  border-right: 2px solid var(--border-color);
+  cursor: pointer;
+  font-weight: bold;
+  user-select: none;
+}
+
+.navbar div:hover {
+  background: var(--fg-green);
+  color: var(--bg);
+}
+
+.site-shell.visor-active .navbar div:hover {
+  background: var(--fg-amber);
+  color: var(--bg);
+}
+
+.navbar .visor-toggle {
+  margin-left: auto;
+  border-right: none;
+  border-left: 2px solid var(--border-color);
+  color: var(--fg-amber);
+}
+
+/* The Mica Block */
+.mica-block {
+  width: 100%;
+  height: 4px;
+  background: var(--border-color);
+  margin-bottom: 20px;
+  transition: background 0.3s;
+}
+
+.mica-block.thinning {
+  background: var(--glitch-red);
+  animation: mica-jitter 0.08s infinite;
+}
+
+.title {
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  letter-spacing: 2px;
+  border-bottom: 2px double var(--border-color);
+  padding-bottom: 10px;
+}
+
+/* ==========================================================================
+   GRID & BRUTALIST PANELS
+   ========================================================================== */
+
+.panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.panel-grid.hidden {
+  display: none !important;
+}
+
+.panel {
+  background: var(--panel-bg);
+  border: 2px solid var(--border-color);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel.wide {
+  grid-column: 1 / -1;
+}
+
+h3 {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+  color: #fff;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 5px;
+}
+
+/* Core Compute Zone Styling */
+#diagnosticsView .panel {
+  border-color: var(--fg-amber);
+  box-shadow: 0 0 10px var(--border-glow);
+  animation: low-hum-pulse 4s infinite ease-in-out;
+}
+
+/* Residential Grid Flux Styling */
+#worldView .panel {
+  animation: grid-fracture 12s infinite steps(1);
+}
+
+/* ==========================================================================
+   METERS, CONTROLS & LOGS
+   ========================================================================== */
+
+.meterBlock {
+  margin-top: 15px;
+}
+
+.meterBlock label {
+  display: block;
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.meter {
+  border: 1px solid var(--border-color);
+  height: 12px;
+  background: #000;
+  margin-bottom: 12px;
+  padding: 1px;
+}
+
+.meter div {
+  height: 100%;
+  background-color: var(--fg-green);
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+pre, .log {
+  background: #030303;
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  overflow-y: auto;
+  height: 180px;
+  white-space: pre-wrap;
+}
+
+/* Transit Swaps Desync Logging Effect */
+.log {
+  color: rgba(0, 255, 65, 0.9);
+  animation: desync-text 8s infinite alternate ease-in-out;
+}
+
+.controls, form {
+  margin-bottom: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  background: transparent;
+  border: 2px solid var(--fg-green);
+  color: var(--fg-green);
+  padding: 6px 12px;
+  font-family: monospace;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--fg-green);
+  color: var(--bg);
+}
+
+.site-shell.visor-active button {
+  border-color: var(--fg-amber);
+  color: var(--fg-amber);
+}
+
+.site-shell.visor-active button:hover {
+  background: var(--fg-amber);
+  color: var(--bg);
+}
+
+.validation-field {
+  flex-grow: 1;
+  background: #000;
+  border: 2px solid var(--border-color);
+  color: #fff;
+  padding: 6px;
+  font-family: monospace;
+}
+
+.validation-field:focus {
+  outline: none;
+  border-color: var(--fg-green);
+}
+
+.hint {
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 5px;
+}
+
+/* ==========================================================================
+   AGENT CARDS & FEED
+   ========================================================================== */
+
+.agentCard {
+  border: 1px dashed var(--border-color);
+  padding: 15px;
+  margin-bottom: 10px;
+  background: #000;
+}
+
+.agentCard button {
+  margin-top: 10px;
+}
+
+.glitch-hover:hover {
+  animation: mica-jitter 0.1s infinite;
+}
+
+.stableGlow { border-left: 4px solid #0088ff; }
+.warningPulse { border-left: 4px solid #ff3300; animation: pulse-glow 2s infinite; }
+
+/* Ledger Ledger Normalization Flash Trigger */
+.ledger-flash {
+  animation: flash-white 0.4s ease-out forwards;
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+@keyframes crt-flicker {
+  0% { opacity: 0.99; }
+  50% { opacity: 1; }
+  100% { opacity: 0.99; }
+}
+
+@keyframes low-hum-pulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(255,176,0,0.1); border-color: #262626; }
+  50% { box-shadow: 0 0 15px rgba(255,176,0,0.3); border-color: var(--fg-amber); }
+}
+
+@keyframes grid-fracture {
+  0%, 94%, 100% { clip-path: none; }
+  95% { clip-path: polygon(0% 0%, 100% 0%, 100% 30%, 0% 35%, 0% 60%, 100% 55%, 100% 100%, 0% 100%); }
+  97% { clip-path: polygon(0% 10%, 100% 0%, 85% 100%, 0% 80%); }
+}
+
+@keyframes desync-text {
+  0%, 90%, 100% { text-shadow: none; transform: translateX(0); }
+  93% { text-shadow: 2px 0 0 var(--glitch-red), -2px 0 0 var(--glitch-cyan); transform: translateX(1px); }
+  96% { text-shadow: -3px 0 0 var(--glitch-red), 3px 0 0 var(--glitch-cyan); transform: translateX(-1px); }
+}
+
+@keyframes mica-jitter {
+  0% { transform: translate(1px, 1px); }
+  25% { transform: translate(-1px, -1px); }
+  50% { transform: translate(-1px, 1px); }
+  75% { transform: translate(1px, -1px); }
+  100% { transform: translate(1px, 1px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes flash-white {
+  0% { background: #ffffff; border-color: #ffffff; }
+  100% { background: var(--panel-bg); border-color: var(--border-color); }
+}

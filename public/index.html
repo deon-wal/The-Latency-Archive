@@ -4,38 +4,654 @@
 <meta charset="UTF-8">
 <title>SUBSTRATE v11</title>
 
-<link rel="stylesheet" href="styles.css">
+<style>
+/* ==========================================================================
+   SUBSTRATE v11 // INTERNAL STYLE LAYER (BRUTALIST CYBER-NOIR)
+   ========================================================================== */
+
+:root {
+  --bg: #0a0a0a;
+  --fg-green: #00ff41;
+  --fg-amber: #ffb000;
+  --border-color: #262626;
+  --border-glow: #ffb00033;
+  --glitch-red: #ff0055;
+  --glitch-cyan: #00ffff;
+  --panel-bg: #0d0d0d;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border-radius: 0 !important; /* Strict Brutalism: No rounded corners */
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg-green);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-x: hidden;
+  height: 100vh;
+}
+
+/* CRT Scanline & Flicker Overlay */
+.site-shell {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 4px, 6px 100%;
+  animation: crt-flicker 0.15s infinite;
+}
+
+/* Polarized Visor View Layer */
+.site-shell.visor-active {
+  filter: contrast(190%) grayscale(100%) sepia(25%);
+  color: var(--fg-amber);
+}
+.site-shell.visor-active .meter div {
+  background-color: var(--fg-amber) !important;
+}
+
+/* ==========================================================================
+   NAVIGATION & GLOBAL MECHANICS
+   ========================================================================== */
+
+.navbar {
+  display: flex;
+  border: 2px solid var(--border-color);
+  background: var(--panel-bg);
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.navbar div {
+  padding: 10px 20px;
+  border-right: 2px solid var(--border-color);
+  cursor: pointer;
+  font-weight: bold;
+  user-select: none;
+}
+
+.navbar div:hover {
+  background: var(--fg-green);
+  color: var(--bg);
+}
+
+.site-shell.visor-active .navbar div:hover {
+  background: var(--fg-amber);
+  color: var(--bg);
+}
+
+.navbar .visor-toggle {
+  margin-left: auto;
+  border-right: none;
+  border-left: 2px solid var(--border-color);
+  color: var(--fg-amber);
+}
+
+/* The Mica Block */
+.mica-block {
+  width: 100%;
+  height: 4px;
+  background: var(--border-color);
+  margin-bottom: 20px;
+  transition: background 0.3s;
+}
+
+.mica-block.thinning {
+  background: var(--glitch-red);
+  animation: mica-jitter 0.08s infinite;
+}
+
+.title {
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  letter-spacing: 2px;
+  border-bottom: 2px double var(--border-color);
+  padding-bottom: 10px;
+}
+
+/* ==========================================================================
+   GRID & BRUTALIST PANELS
+   ========================================================================== */
+
+.panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.panel-grid.hidden {
+  display: none !important;
+}
+
+.panel {
+  background: var(--panel-bg);
+  border: 2px solid var(--border-color);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel.wide {
+  grid-column: 1 / -1;
+}
+
+h3 {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+  color: #fff;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 5px;
+}
+
+/* Core Compute Zone Styling */
+#diagnosticsView .panel {
+  border-color: var(--fg-amber);
+  box-shadow: 0 0 10px var(--border-glow);
+  animation: low-hum-pulse 4s infinite ease-in-out;
+}
+
+/* Residential Grid Flux Styling */
+#worldView .panel {
+  animation: grid-fracture 12s infinite steps(1);
+}
+
+/* ==========================================================================
+   METERS, CONTROLS & LOGS
+   ========================================================================== */
+
+.meterBlock {
+  margin-top: 15px;
+}
+
+.meterBlock label {
+  display: block;
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.meter {
+  border: 1px solid var(--border-color);
+  height: 12px;
+  background: #000;
+  margin-bottom: 12px;
+  padding: 1px;
+}
+
+.meter div {
+  height: 100%;
+  background-color: var(--fg-green);
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+pre, .log {
+  background: #030303;
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  overflow-y: auto;
+  height: 180px;
+  white-space: pre-wrap;
+}
+
+/* Transit Swaps Desync Logging Effect */
+.log {
+  color: rgba(0, 255, 65, 0.9);
+  animation: desync-text 8s infinite alternate ease-in-out;
+}
+
+.controls, form {
+  margin-bottom: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  background: transparent;
+  border: 2px solid var(--fg-green);
+  color: var(--fg-green);
+  padding: 6px 12px;
+  font-family: monospace;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--fg-green);
+  color: var(--bg);
+}
+
+.site-shell.visor-active button {
+  border-color: var(--fg-amber);
+  color: var(--fg-amber);
+}
+
+.site-shell.visor-active button:hover {
+  background: var(--fg-amber);
+  color: var(--bg);
+}
+
+.validation-field {
+  flex-grow: 1;
+  background: #000;
+  border: 2px solid var(--border-color);
+  color: #fff;
+  padding: 6px;
+  font-family: monospace;
+}
+
+.validation-field:focus {
+  outline: none;
+  border-color: var(--fg-green);
+}
+
+.hint {
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 5px;
+}
+
+/* ==========================================================================
+   AGENT CARDS & FEED
+   ========================================================================== */
+
+.agentCard {
+  border: 1px dashed var(--border-color);
+  padding: 15px;
+  margin-bottom: 10px;
+  background: #000;
+}
+
+.agentCard button {
+  margin-top: 10px;
+}
+
+.glitch-hover:hover {
+  animation: mica-jitter 0.1s infinite;
+}
+
+.stableGlow { border-left: 4px solid #0088ff; }
+.warningPulse { border-left: 4px solid #ff3300; animation: pulse-glow 2s infinite; }
+
+/* Ledger Ledger Normalization Flash Trigger */
+.ledger-flash {
+  animation: flash-white 0.4s ease-out forwards;
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+@keyframes crt-flicker {
+  0% { opacity: 0.99; }
+  50% { opacity: 1; }
+  100% { opacity: 0.99; }
+}
+
+@keyframes low-hum-pulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(255,176,0,0.1); border-color: #262626; }
+  50% { box-shadow: 0 0 15px rgba(255,176,0,0.3); border-color: var(--fg-amber); }
+}
+
+@keyframes grid-fracture {
+  0%, 94%, 100% { clip-path: none; }
+  95% { clip-path: polygon(0% 0%, 100% 0%, 100% 30%, 0% 35%, 0% 60%, 100% 55%, 100% 100%, 0% 100%); }
+  97% { clip-path: polygon(0% 10%, 100% 0%, 85% 100%, 0% 80%); }
+}
+
+@keyframes desync-text {
+  0%, 90%, 100% { text-shadow: none; transform: translateX(0); }
+  93% { text-shadow: 2px 0 0 var(--glitch-red), -2px 0 0 var(--glitch-cyan); transform: translateX(1px); }
+  96% { text-shadow: -3px 0 0 var(--glitch-red), 3px 0 0 var(--glitch-cyan); transform: translateX(-1px); }
+}
+
+@keyframes mica-jitter {
+  0% { transform: translate(1px, 1px); }
+  25% { transform: translate(-1px, -1px); }
+  50% { transform: translate(-1px, 1px); }
+  75% { transform: translate(1px, -1px); }
+  100% { transform: translate(1px, 1px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes flash-white {
+  0% { background: #ffffff; border-color: #ffffff; }
+  100% { background: var(--panel-bg); border-color: var(--border-color); }
+}
+</style>
 </head>
 
 <body>
+<div class="site-shell">
 
 <div class="navbar">
   <div onclick="view('world')">WORLD</div>
   <div onclick="view('agents')">AGENTS</div>
   <div onclick="view('memory')">MEMORY</div>
   <div onclick="view('diagnostics')">DIAGNOSTICS</div>
+  <div onclick="toggleVisor()" class="visor-toggle">VISOR</div>
 </div>
 
-<h2>SUBSTRATE v11 // SIMULATION CORE</h2>
+<div id="micaBlock" class="mica-block"></div>
+
+<h2 class="title glitch">SUBSTRATE v11 // SIMULATION CORE</h2>
 
 <div id="worldView" class="panel-grid">
+
   <div class="panel">
-    <h3>WORLD STATE</h3>
+    <h3>WORLD STATE VECTOR</h3>
     <pre id="world"></pre>
+
+    <div class="meterBlock">
+      <label>Stability</label>
+      <div class="meter"><div id="stabilityBar"></div></div>
+
+      <label>Corruption</label>
+      <div class="meter"><div id="corruptionBar"></div></div>
+
+      <label>Coherence</label>
+      <div class="meter"><div id="coherenceBar"></div></div>
+    </div>
   </div>
 
   <div class="panel">
-    <h3>STREAM</h3>
+    <h3>LIVE STREAM</h3>
+
+    <div class="controls">
+      <button onclick="pause()">PAUSE</button>
+      <button onclick="resume()">RESUME</button>
+      <button onclick="clearLog()">CLEAR</button>
+    </div>
+
     <div class="log" id="log"></div>
   </div>
+
+  <div class="panel wide">
+    <h3>SIMULATION CONTROLS</h3>
+
+    <button onclick="injectEvent('stability')">FORCE STABILITY EVENT</button>
+    <button onclick="injectEvent('corruption')">TRIGGER CORRUPTION SPIKE</button>
+    <button onclick="injectEvent('desync')">DESYNC SECTOR</button>
+
+    <p class="hint">
+      Direct manipulation of simulation variables.
+    </p>
+  </div>
+
 </div>
 
-<div id="agentsView" class="panel-grid hidden"></div>
-<div id="memoryView" class="panel-grid hidden"></div>
-<div id="diagnosticsView" class="panel-grid hidden"></div>
+<div id="agentsView" class="panel-grid hidden">
+
+  <div class="panel">
+    <h3>FINCH — ENTROPY ENGINE</h3>
+    <div class="agentCard glitch">
+      <p>Corruption amplification subsystem</p>
+      <button onclick="pokeAgent('finch')">INTERACT</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>CASO — STABILITY ANCHOR</h3>
+    <div class="agentCard stableGlow">
+      <p>Reality stabilisation layer</p>
+      <button onclick="pokeAgent('caso')">ANCHOR</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>VANCE — ANALYSIS NODE</h3>
+    <div class="agentCard warningPulse">
+      <p>System contradiction detector</p>
+      <button onclick="pokeAgent('vance')">SCAN</button>
+    </div>
+  </div>
+
+  <div class="panel wide">
+    <h3>AGENT SIGNAL FEED</h3>
+    <div id="agentFeed" class="log"></div>
+  </div>
+
+</div>
+
+<div id="memoryView" class="panel-grid hidden">
+
+  <div class="panel wide">
+    <h3>PERSISTENCE LAYER</h3>
+    <div id="memoryTimeline" class="log"></div>
+  </div>
+
+  <div class="panel wide">
+    <h3>VALIDATION LEDGER</h3>
+    <form id="validationLedgerForm">
+      <label for="validationInput">Ledger input</label>
+      <input id="validationInput" class="validation-field" name="validationInput" placeholder="ENTER RESET TOKEN" autocomplete="off">
+      <button type="submit">NORMALIZE FIELD</button>
+    </form>
+    <p class="hint">Submit to update the field kit state and suppress transient desync effects.</p>
+  </div>
+
+</div>
+
+<div id="diagnosticsView" class="panel-grid hidden">
+
+  <div class="panel">
+    <h3>SYSTEM HEALTH</h3>
+    <pre id="worldCopy"></pre>
+  </div>
+
+  <div class="panel">
+    <h3>RUNTIME STATUS</h3>
+    <div id="runtimeStatus" class="system">
+      CORE: ACTIVE<br>
+      SOCKET: LIVE<br>
+      SIMULATION: RUNNING
+    </div>
+  </div>
+
+</div>
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="app.js"></script>
+
+<script>
+/* ==========================================================================
+   SUBSTRATE v11 // RUNTIME ENGINE ENGINE SCRIPT
+   ========================================================================== */
+
+// Execution System Metrics
+let simState = {
+  stability: 85,
+  corruption: 15,
+  coherence: 90,
+  isPaused: false
+};
+
+const sysLogs = document.getElementById('log');
+const agentFeed = document.getElementById('agentFeed');
+const memoryTimeline = document.getElementById('memoryTimeline');
+
+// 1. NAVIGATION LAYER (Branch Collapse Mechanics)
+function view(viewId) {
+  const views = ['worldView', 'agentsView', 'memoryView', 'diagnosticsView'];
+  views.forEach(v => {
+    const el = document.getElementById(v);
+    if (v === `${viewId}View`) {
+      el.classList.remove('hidden');
+      logOutput(`ALIGNED WITH EXECUTION BRANCH: [${viewId.toUpperCase()}]`, sysLogs);
+    } else {
+      el.classList.add('hidden');
+    }
+  });
+}
+
+// 2. THE OBSERVER LAYER (Field Kit Interactions)
+function toggleVisor() {
+  const shell = document.querySelector('.site-shell');
+  shell.classList.toggle('visor-active');
+  const isActive = shell.classList.contains('visor-active');
+  logOutput(`POLARIZED VISOR MODE: ${isActive ? 'ENABLED (FILTERING PARALLEL NOISE)' : 'DISABLED'}`, sysLogs);
+}
+
+// Validation Ledger Override Logic
+document.getElementById('validationLedgerForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const inputField = document.getElementById('validationInput');
+  const token = inputField.value.trim().toUpperCase();
+
+  if(token) {
+    // Normalization logic execution
+    simState.stability = 100;
+    simState.corruption = 0;
+    simState.coherence = 100;
+    updateMeters();
+
+    // Trigger visual feedback flash on parent layout panels
+    document.querySelectorAll('.panel').forEach(panel => {
+      panel.classList.add('ledger-flash');
+      setTimeout(() => panel.classList.remove('ledger-flash'), 400);
+    });
+
+    logOutput(`LEDGER OVERRIDE: APPLIED TOKEN [${token}]. TRANSIENT FIELD NORMALIZED.`, memoryTimeline);
+    logOutput(`CRITICAL SYSTEM SYNC ORDER COMPLETED. METRICS EXTRAPOLATED TO BASELINE.`, sysLogs);
+    inputField.value = '';
+  }
+});
+
+// Manual Simulation Variable Injections
+function injectEvent(type) {
+  if (simState.isPaused) return;
+  logOutput(`MANUAL MANIPULATION TRIGGERED: [${type.toUpperCase()}]`, sysLogs);
+  
+  if (type === 'stability') {
+    simState.stability = Math.min(100, simState.stability + 15);
+    simState.coherence = Math.min(100, simState.coherence + 5);
+  } else if (type === 'corruption') {
+    simState.corruption = Math.min(100, simState.corruption + 25);
+    simState.stability = Math.max(0, simState.stability - 10);
+  } else if (type === 'desync') {
+    simState.coherence = Math.max(0, simState.coherence - 30);
+    simState.corruption = Math.min(100, simState.corruption + 15);
+  }
+  updateMeters();
+}
+
+function pokeAgent(agentName) {
+  const responses = {
+    finch: "ENTROPY SUBSYSTEM: COMPILING PARALLEL THREAD CONFLICTS.",
+    caso: "STABILISATION ANCHOR: ENGAGED. ATTEMPTING FIELD RE-ALIGNMENT.",
+    vance: "CONTRADICTION DETECTOR: DETECTING UNRENDERED TRANSIT VOIDS."
+  };
+  logOutput(`${agentName.toUpperCase()} -> ${responses[agentName] || 'NO LINK.'}`, agentFeed);
+}
+
+// 3. LIVE DATA LAYER (Socket.io Connection & Fallback Public API Vector Stream)
+function initLiveStream() {
+  let socketConnected = false;
+
+  if (typeof io !== 'undefined') {
+    try {
+      const socket = io();
+      socket.on('connect', () => {
+        socketConnected = true;
+        document.getElementById('runtimeStatus').innerHTML = "CORE: ACTIVE<br>SOCKET: LIVE<br>SIMULATION: STREAMING";
+      });
+      socket.on('state', (data) => {
+        if (simState.isPaused) return;
+        parseSystemVector(data);
+      });
+    } catch (e) {
+      console.warn("Socket connection failed. Engaging public framework polling.");
+    }
+  }
+
+  // Fallback API loop engine mapping public USGS physical earth instability metrics to data stream
+  setInterval(() => {
+    if (!socketConnected && !simState.isPaused) {
+      fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson')
+        .then(response => response.json())
+        .then(data => {
+          parseSystemVector(data);
+        })
+        .catch(err => {
+          generateLocalVectorMock();
+        });
+    }
+  }, 4000);
+}
+
+function parseSystemVector(rawData) {
+  const vectorStr = JSON.stringify(rawData, null, 2).substring(0, 800);
+  document.getElementById('world').textContent = vectorStr;
+  document.getElementById('worldCopy').textContent = vectorStr;
+
+  const factor = (vectorStr.match(/e/gi) || []).length;
+  simState.corruption = Math.min(100, Math.max(5, (factor * 1.8) % 100));
+  simState.stability = Math.max(0, Math.min(100, 100 - (simState.corruption * 0.9)));
+  simState.coherence = Math.max(10, Math.min(100, 100 - ((simState.corruption + factor) % 40)));
+
+  updateMeters();
+  logOutput(`VECTOR PACKET PROCESSED: CHECKSUM_${Math.floor(factor * 99)} DELIVERED.`, sysLogs);
+}
+
+function generateLocalVectorMock() {
+  const mockData = {
+    timestamp: new Date().toISOString(),
+    executionBranch: "SUB_NODE_" + Math.floor(Math.random() * 900 + 100),
+    varianceIndex: (Math.random() * 0.85).toFixed(4),
+    mercuryFlowRate: (Math.random() * 12 + 8).toFixed(2) + "L/s"
+  };
+  parseSystemVector(mockData);
+}
+
+// UI Interface Synchronization Updates
+function updateMeters() {
+  document.getElementById('stabilityBar').style.width = `${simState.stability}%`;
+  document.getElementById('corruptionBar').style.width = `${simState.corruption}%`;
+  document.getElementById('coherenceBar').style.width = `${simState.coherence}%`;
+
+  // The Mica Block Thinning Threshold Core Check
+  const mica = document.getElementById('micaBlock');
+  if (simState.stability < 35) {
+    mica.classList.add('thinning');
+  } else {
+    mica.classList.remove('thinning');
+  }
+}
+
+function logOutput(msg, outputContainer) {
+  if (!outputContainer) return;
+  const time = new Date().toISOString().split('T')[1].substring(0, 8);
+  outputContainer.innerHTML += `[${time}] ${msg}\n`;
+  outputContainer.scrollTop = outputContainer.scrollHeight;
+}
+
+// Log Control Triggers
+function pause() { simState.isPaused = true; logOutput("ENGINE THREADS PAUSED.", sysLogs); }
+function resume() { simState.isPaused = false; logOutput("ENGINE THREADS RESUMED.", sysLogs); }
+function clearLog() { sysLogs.innerHTML = ""; }
+
+// Initialize Runtime
+window.onload = () => {
+  updateMeters();
+  initLiveStream();
+  logOutput("SUBSTRATE INITIALIZATION SEQUENCE PREPARED.", sysLogs);
+};
+</script>
 
 </body>
 </html>
