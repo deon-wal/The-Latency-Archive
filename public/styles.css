@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SUBSTRATE v11 // CORE TERMINAL STYLE SHEET
+   SUBSTRATE v11 // CORE STYLE ENGINE (BRUTALIST CYBER-NOIR)
    ========================================================================== */
 
 :root {
@@ -17,7 +17,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border-radius: 0 !important; /* Strict Brutalism: No rounded corners */
+  border-radius: 0 !important; /* Strict Brutalism: Defiantly square */
 }
 
 body {
@@ -36,7 +36,8 @@ body {
   width: 100%;
   min-height: 100vh;
   padding: 20px;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
   background-size: 100% 4px, 6px 100%;
   animation: crt-flicker 0.15s infinite;
 }
@@ -46,12 +47,13 @@ body {
   filter: contrast(190%) grayscale(100%) sepia(25%);
   color: var(--fg-amber);
 }
+
 .site-shell.visor-active .meter div {
   background-color: var(--fg-amber) !important;
 }
 
 /* ==========================================================================
-   NAVIGATION & GLOBAL MECHANICS
+   SEMANTIC NAVIGATION & STRUCTURAL MECHANICS
    ========================================================================== */
 
 .navbar {
@@ -62,24 +64,26 @@ body {
   width: 100%;
 }
 
-.navbar div {
-  padding: 10px 20px;
+.navbar button {
+  background: transparent;
+  border: none;
   border-right: 2px solid var(--border-color);
-  cursor: pointer;
+  color: var(--fg-green);
+  padding: 10px 20px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
   font-weight: bold;
+  cursor: pointer;
   user-select: none;
+  transition: background 0.2s, color 0.2s;
 }
 
-.navbar div:hover {
+.navbar button:hover {
   background: var(--fg-green);
   color: var(--bg);
 }
 
-.site-shell.visor-active .navbar div:hover {
-  background: var(--fg-amber);
-  color: var(--bg);
-}
-
+/* Visor Toggle Behavior Alignment */
 .navbar .visor-toggle {
   margin-left: auto;
   border-right: none;
@@ -87,7 +91,17 @@ body {
   color: var(--fg-amber);
 }
 
-/* The Mica Block */
+.site-shell.visor-active .navbar button {
+  color: var(--fg-amber);
+  border-color: var(--border-color);
+}
+
+.site-shell.visor-active .navbar button:hover {
+  background: var(--fg-amber);
+  color: var(--bg);
+}
+
+/* The Mica Block Deficit Line */
 .mica-block {
   width: 100%;
   height: 4px;
@@ -145,15 +159,14 @@ h3 {
   padding-bottom: 5px;
 }
 
-/* Core Compute Zone Styling */
+/* Specific Subsystem View Animations */
 #diagnosticsView .panel {
   border-color: var(--fg-amber);
   box-shadow: 0 0 10px var(--border-glow);
   animation: low-hum-pulse 4s infinite ease-in-out;
 }
 
-/* Residential Grid Flux Styling */
-#worldView .panel {
+#worldView .panel:first-child {
   animation: grid-fracture 12s infinite steps(1);
 }
 
@@ -191,23 +204,27 @@ pre, .log {
   background: #030303;
   border: 1px solid var(--border-color);
   padding: 12px;
-  font-family: monospace;
+  font-family: 'Courier New', Courier, monospace;
   font-size: 0.85rem;
   overflow-y: auto;
   height: 180px;
   white-space: pre-wrap;
 }
 
-/* Transit Swaps Desync Logging Effect */
 .log {
   color: rgba(0, 255, 65, 0.9);
   animation: desync-text 8s infinite alternate ease-in-out;
 }
 
-.controls, form {
+.controls, .button-group, form {
   margin-bottom: 12px;
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
+}
+
+.panel wide .button-group button {
+  flex: 1;
 }
 
 button {
@@ -215,9 +232,10 @@ button {
   border: 2px solid var(--fg-green);
   color: var(--fg-green);
   padding: 6px 12px;
-  font-family: monospace;
+  font-family: 'Courier New', Courier, monospace;
   font-weight: bold;
   cursor: pointer;
+  transition: background 0.2s, color 0.2s;
 }
 
 button:hover {
@@ -240,13 +258,17 @@ button:hover {
   background: #000;
   border: 2px solid var(--border-color);
   color: #fff;
-  padding: 6px;
-  font-family: monospace;
+  padding: 8px;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 .validation-field:focus {
   outline: none;
   border-color: var(--fg-green);
+}
+
+.site-shell.visor-active .validation-field:focus {
+  border-color: var(--fg-amber);
 }
 
 .hint {
@@ -256,8 +278,29 @@ button:hover {
 }
 
 /* ==========================================================================
-   AGENT CARDS & FEED
+   INTEREST POINTS & ASSET CARDS
    ========================================================================== */
+
+.poi-registry {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.poi-node {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: #000;
+  border: 1px solid var(--border-color);
+  font-size: 0.85rem;
+}
+
+.node-id { font-weight: bold; color: #fff; }
+.node-loc { flex-grow: 1; margin-left: 15px; color: var(--fg-green); }
+.site-shell.visor-active .node-loc { color: var(--fg-amber); }
+.node-status { font-size: 0.75rem; opacity: 0.7; }
 
 .agentCard {
   border: 1px dashed var(--border-color);
@@ -270,31 +313,25 @@ button:hover {
   margin-top: 10px;
 }
 
-.glitch-hover:hover {
-  animation: mica-jitter 0.1s infinite;
-}
-
+/* Borders and Pulses */
 .stableGlow { border-left: 4px solid #0088ff; }
 .warningPulse { border-left: 4px solid #ff3300; animation: pulse-glow 2s infinite; }
-
-/* Ledger Ledger Normalization Flash Trigger */
-.ledger-flash {
-  animation: flash-white 0.4s ease-out forwards;
-}
+.glitch-hover:hover { animation: mica-jitter 0.1s infinite; }
+.ledger-flash { animation: flash-white 0.4s ease-out forwards; }
 
 /* ==========================================================================
    ANIMATIONS
    ========================================================================== */
 
 @keyframes crt-flicker {
-  0% { opacity: 0.99; }
+  0% { opacity: 0.985; }
   50% { opacity: 1; }
-  100% { opacity: 0.99; }
+  100% { opacity: 0.985; }
 }
 
 @keyframes low-hum-pulse {
   0%, 100% { box-shadow: 0 0 5px rgba(255,176,0,0.1); border-color: #262626; }
-  50% { box-shadow: 0 0 15px rgba(255,176,0,0.3); border-color: var(--fg-amber); }
+  50% { box-shadow: 0 0 15px rgba(255,176,0,0.25); border-color: var(--fg-amber); }
 }
 
 @keyframes grid-fracture {
@@ -304,9 +341,9 @@ button:hover {
 }
 
 @keyframes desync-text {
-  0%, 90%, 100% { text-shadow: none; transform: translateX(0); }
-  93% { text-shadow: 2px 0 0 var(--glitch-red), -2px 0 0 var(--glitch-cyan); transform: translateX(1px); }
-  96% { text-shadow: -3px 0 0 var(--glitch-red), 3px 0 0 var(--glitch-cyan); transform: translateX(-1px); }
+  0%, 92%, 100% { text-shadow: none; transform: translateX(0); }
+  94% { text-shadow: 2px 0 0 var(--glitch-red), -2px 0 0 var(--glitch-cyan); transform: translateX(1px); }
+  97% { text-shadow: -3px 0 0 var(--glitch-red), 3px 0 0 var(--glitch-cyan); transform: translateX(-1px); }
 }
 
 @keyframes mica-jitter {
