@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SUBSTRATE v11</title>
+
+<style>
+body {
+  margin: 0;
+  background: #050607;
+  color: #b7ffda;
+  font-family: monospace;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 10px;
+}
+
+.panel {
+  border: 1px solid #1aff88;
+  padding: 10px;
+  background: rgba(0,0,0,0.4);
+}
+
+.log {
+  height: 400px;
+  overflow-y: auto;
+  font-size: 12px;
+}
+
+.agent {
+  color: #ffb86b;
+}
+
+.system {
+  color: #7affff;
+}
+</style>
+</head>
+
+<body>
+
+<h3 style="text-align:center;">SUBSTRATE v11 — LIVING LANGUAGE SIMULATION</h3>
+
+<div class="container">
+
+  <div class="panel">
+    <h4>WORLD STATE</h4>
+    <pre id="world"></pre>
+  </div>
+
+  <div class="panel">
+    <h4>AGENT CONVERSATION STREAM</h4>
+    <div class="log" id="log"></div>
+  </div>
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+const socket = io();
+
+/* -----------------------------
+   WORLD STATE RENDER
+------------------------------ */
+
+socket.on("world:update", (w) => {
+  document.getElementById("world").innerText =
+    JSON.stringify(w, null, 2);
+});
+
+/* -----------------------------
+   NARRATIVE STREAM RENDER
+------------------------------ */
+
+socket.on("story:event", (e) => {
+
+  const div = document.createElement("div");
+
+  if (e.type === "system") div.className = "system";
+  if (e.type === "agent") div.className = "agent";
+
+  div.textContent = e.msg;
+
+  const log = document.getElementById("log");
+  log.appendChild(div);
+
+  if (log.children.length > 60) {
+    log.removeChild(log.firstChild);
+  }
+
+  log.scrollTop = log.scrollHeight;
+});
+</script>
+
+</body>
+</html>
