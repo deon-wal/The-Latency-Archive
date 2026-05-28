@@ -207,3 +207,41 @@ function emitNarrative() {
 setInterval(() => {
   if (Math.random() > 0.6) emitNarrative();
 }, 6000);
+function emitNarrative() {
+  if (simState.isPaused) return;
+
+  const msg = narrativeEvents[Math.floor(Math.random() * narrativeEvents.length)];
+  logOutput(`⚠ ${msg}`, sysLogs);
+}
+
+// run every 6–10 sec randomly
+setInterval(() => {
+  if (Math.random() > 0.6) emitNarrative();
+}, 6000);
+
+function trackUser() {
+  const trace = `
+Session: ${Math.floor(Math.random()*99999)}
+Latency: ${Math.random().toFixed(4)}
+Drift: ${(Math.random()*10).toFixed(2)}%
+  `;
+
+  document.getElementById("userTrace").textContent = trace;
+}
+
+setInterval(trackUser, 3000);
+
+function breakReality() {
+  document.body.style.transform = "skew(2deg)";
+  document.body.style.filter = "hue-rotate(90deg)";
+
+  logOutput("REALITY DESTABILIZED BY USER ACTION", sysLogs);
+
+  setTimeout(() => {
+    document.body.style.transform = "";
+    document.body.style.filter = "";
+  }, 2000);
+}
+function pushArchive(msg) {
+  logOutput(`ARCHIVE: ${msg}`, document.getElementById("archiveLog"));
+}

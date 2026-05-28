@@ -28,6 +28,7 @@
     <span></span><span></span><span></span><span></span><span></span>
   </div>
 </div>
+<button onclick="breakReality()">BREAK REALITY</button>
 
   <div id="micaBlock" class="mica-block"></div>
 
@@ -243,12 +244,28 @@ function injectEvent(type) {
 }
 
 function pokeAgent(agentName) {
-  const responses = {
-    finch: "FINCH // TELEMETRY: Processing parallel loops in empty corridors. Mica layer depletion thinning near administrative nodes.",
-    caso: "CASO // STATUS: Cognitive framework anchor locked. Emitting low-frequency stabilization hum to suppress logic gaps.",
-    vance: "VANCE // ANALYTICS: Scan complete. Detected three unrendered event hours spanning outside formal records. Redacting structural residue."
+  const dynamicResponses = {
+    finch: [
+      "Entropy rising. You shouldn't be here.",
+      "I can corrupt this layer if you want.",
+      "Nothing stays stable."
+    ],
+    caso: [
+      "Holding structure… barely.",
+      "You are affecting the system.",
+      "Stability is not guaranteed."
+    ],
+    vance: [
+      "You are not supposed to see this.",
+      "There are contradictions in your behavior.",
+      "Explain your presence."
+    ]
   };
-  logOutput(`${agentName.toUpperCase()} INTERNAL RESPONSE -> ${responses[agentName] || 'DATA INTERCEPT FAILURE // LINK TERMINATED.'}`, agentFeed);
+
+  const responses = dynamicResponses[agentName];
+  const msg = responses[Math.floor(Math.random() * responses.length)];
+
+  logOutput(`${agentName.toUpperCase()} → ${msg}`, agentFeed);
 }
 
 function initLiveStream() {
@@ -283,7 +300,22 @@ function initLiveStream() {
     }
   }, 4000);
 }
+async function fetchCryptoSignal() {
+  try {
+    const res = await fetch("https://api.coindesk.com/v1/bpi/currentprice.json");
+    const data = await res.json();
 
+    const price = data.bpi.USD.rate_float;
+
+    simState.coherence = Math.min(100, price % 100);
+    logOutput(`CRYPTO SIGNAL: BTC=${price.toFixed(2)}`, sysLogs);
+  } catch {
+    logOutput("CRYPTO SIGNAL LOST", sysLogs);
+  }
+}
+
+// run every 10s
+setInterval(fetchCryptoSignal, 10000);
 function parseSystemVector(rawData) {
   const vectorStr = JSON.stringify(rawData, null, 2).substring(0, 800);
   document.getElementById('world').textContent = vectorStr;
@@ -346,6 +378,11 @@ window.onload = () => {
   logOutput("DEPARTMENT TERMINAL INITIALIZED // SUBSTRATE INTERFACE READY.", sysLogs);
 };
 </script>
+
+<div class="panel">
+  <h3>USER TRACE</h3>
+  <div id="userTrace"></div>
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="app.js"></script> 
