@@ -426,3 +426,84 @@ button:hover {
   0%, 100% { opacity: 0.4; color: var(--glitch-red); }
   50% { opacity: 1; color: var(--fg-accent); }
 }
+/* Latched Mainframe Selector Switch */
+.navbar button.active {
+  background: var(--fg-accent);
+  color: var(--bg);
+  border-color: var(--fg-accent);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4);
+}
+.navbar button.active::before {
+  content: "▶ ";
+  font-size: 11px;
+}
+/* Custom Monospace Container Tracks */
+pre::-webkit-scrollbar,
+.log::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+pre::-webkit-scrollbar-track,
+.log::-webkit-scrollbar-track {
+  background: #020204;
+  border-left: 1px solid var(--border-color);
+}
+pre::-webkit-scrollbar-thumb,
+.log::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+}
+pre::-webkit-scrollbar-thumb:hover,
+.log::-webkit-scrollbar-thumb:hover {
+  background: var(--fg-accent);
+}
+/* Bureaucratic Processing Stamps */
+.poi-node {
+  position: relative;
+  overflow: hidden;
+}
+
+.poi-node::after {
+  position: absolute;
+  right: 140px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-8deg);
+  font-size: 0.65rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  letter-spacing: 1px;
+  opacity: 0.25;
+}
+
+.poi-node.stableGlow::after {
+  content: "FILED & RECONCILED";
+  border: 1px solid #4361ee;
+  color: #4361ee;
+}
+
+.poi-node.warningPulse::after {
+  content: "OMISSION DRIFT";
+  border: 1px solid var(--glitch-red);
+  color: var(--glitch-red);
+}
+.matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+  max-width: 160px;
+  margin-top: 10px;
+}
+
+.matrix-grid span {
+  width: 8px;
+  height: 8px;
+  background: #16161c;
+}
+
+/* Simulate hardware data register reading cycles */
+.matrix-grid span:nth-child(3n) { animation: sector-flicker 1.5s infinite ease-in-out; }
+.matrix-grid span:nth-child(7n) { animation: sector-flicker 2.2s infinite ease-in-out; }
+
+@keyframes sector-flicker {
+  0%, 100% { background: #16161c; }
+  50% { background: rgba(255, 144, 0, 0.4); }
+}

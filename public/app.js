@@ -3,14 +3,26 @@ let validationLedgerValue = '';
 let streamPaused = false;
 
 /* ---------------- VIEW SWITCH & EXECUTION LAYERS ---------------- */
-function view(v) {
-  collapseBranch(v);
-  document.querySelectorAll('.panel-grid').forEach(p => p.classList.add('hidden'));
-  const targetView = document.getElementById(v + 'View');
-  if (targetView) targetView.classList.remove('hidden');
+function view(viewId) {
+  const views = ['worldView', 'agentsView', 'memoryView', 'diagnosticsView'];
   
-  // Internal tracking log for branch alignment shifts
-  localLogAppend('SYSTEM', `ALIGNED WITH CONCURRENT BRANCH: [${v.toUpperCase()}]`);
+  // 1. Clear active states from all terminal buttons
+  document.querySelectorAll('.navbar button').forEach(btn => btn.classList.remove('active'));
+  
+  views.forEach(v => {
+    const el = document.getElementById(v);
+    if (v === `${viewId}View`) {
+      el.classList.remove('hidden');
+      
+      // 2. Find the clicked button by its onclick target attribute and latch it down
+      const activeBtn = document.querySelector(`.navbar button[onclick="view('${viewId}')"]`);
+      if(activeBtn) activeBtn.classList.add('active');
+      
+      logOutput(`BRANCH ROUTED // NOW VIEWING CORE SUBSYSTEM: [${viewId.toUpperCase()}]`, sysLogs);
+    } else {
+      el.classList.add('hidden');
+    }
+  });
 }
 
 function collapseBranch(viewName) {
@@ -176,3 +188,22 @@ function localLogAppend(tag, msg) {
   log.appendChild(div);
   log.scrollTop = log.scrollHeight;
 }
+const narrativeEvents = [
+  "A SIGNAL IS BLEEDING THROUGH THE ARCHIVE",
+  "FINCH DETECTED A MEMORY LOOP",
+  "CASO FAILED TO STABILIZE A COLLAPSE NODE",
+  "VANCE FLAGGED AN IMPOSSIBLE STATE",
+  "A USER HAS ENTERED THE SYSTEM (YOU?)"
+];
+
+function emitNarrative() {
+  if (simState.isPaused) return;
+
+  const msg = narrativeEvents[Math.floor(Math.random() * narrativeEvents.length)];
+  logOutput(`⚠ ${msg}`, sysLogs);
+}
+
+// run every 6–10 sec randomly
+setInterval(() => {
+  if (Math.random() > 0.6) emitNarrative();
+}, 6000);
