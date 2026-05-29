@@ -18,6 +18,24 @@
     <button type="button" onclick="view('diagnostics')">SYSTEM AUDIT</button>
     <button type="button" onclick="toggleVisor()" class="visor-toggle">POLARIZED VISOR</button>
   </nav>
+</nav>
+
+<!-- 🔧 AUGMENT: COMMAND BAR -->
+<div class="command-bar panel">
+  <input type="text" placeholder="EXECUTE COMMAND... (/stabilize /scan /purge)" autocomplete="off">
+  <div class="command-actions">
+    <button type="button">RUN</button>
+    <button type="button">HISTORY</button>
+  </div>
+</div>
+
+<!-- 🔧 AUGMENT: ACTIVITY STRIP -->
+<div class="activity-strip">
+  <span>SYNC OK</span>
+  <span>NODE LINKED</span>
+  <span class="warning">DRIFT DETECTED</span>
+  <span>ARCHIVE STABLE</span>
+</div>
 
   <div class="panel">
   <h3>CORE RESIDUAL REGISTER [MICA MEMORY SECTORS]</h3>
