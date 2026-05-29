@@ -1,7 +1,7 @@
 {
   "world": {
-    "stability": 46,
-    "corruption": 66,
+    "stability": 0,
+    "corruption": 100,
     "coherence": 60,
     "sector": 4
   },

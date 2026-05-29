@@ -1,49 +1,63 @@
 /* ==========================================================================
-   SUBSTRATE v12 // THE BUREAUCRATIC CONTINUITY ENGINE
-   PALETTE: MICA BONE, EXPEDITION AMBER, & CRUSHED CARBON
-   ========================================================================== */
+    SUBSTRATE v12 ENHANCED // USABLE CYBERPUNK UI
+    PALETTE: MICA BONE, EXPEDITION AMBER, & CRUSHED CARBON
+    ========================================================================== */
 
 :root {
   --bg: #060608;
-  --fg-primary: #d4d4ce;     /* Mica Layer Bone / Institutional White */
-  --fg-accent: #ff9000;      /* Departmental Cathode Amber */
-  --border-color: #2a2a2e;   /* Heavy Zinc / Cold Iron Slate */
+  --fg-primary: #e8e8e0;        /* Better contrast */
+  --fg-secondary: #b0b0a8;      /* Improved label contrast */
+  --fg-accent: #ff9000;
+  --border-color: #2a2a2e;
   --border-glow: rgba(255, 144, 0, 0.15);
-  --glitch-red: #d62828;     /* Contradiction / Ledger Debt Red */
+  --glitch-red: #d62828;
   --glitch-cyan: #00b4d8;
-  --panel-bg: #0e0e12;       /* Secure Mainframe Void */
+  --status-stable: #4ade80;
+  --status-warning: #fbbf24;
+  --status-critical: #ef4444;
+  --panel-bg: #0e0e12;
+  --panel-hover: #14141a;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border-radius: 0 !important; /* Strict Industrial Brutalism */
+  border-radius: 0 !important;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
 }
 
 body {
   background-color: var(--bg);
   color: var(--fg-primary);
   font-family: 'Courier New', Courier, monospace;
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.6;
   overflow-x: hidden;
-  height: 100vh;
+  overflow-y: auto;
 }
 
-/* CRT Scanline & Structural Decay Overlay */
 .site-shell {
   position: relative;
   width: 100%;
   min-height: 100vh;
-  padding: 30px; /* Increased padding to let the layout breathe */
+  padding: 20px;
   background: linear-gradient(rgba(14, 14, 18, 0) 50%, rgba(0, 0, 0, 0.4) 50%), 
               linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 255, 0.01), rgba(0, 0, 255, 0.03));
   background-size: 100% 6px, 6px 100%;
   animation: crt-flicker 0.2s infinite;
 }
 
-/* Polarized Visor View Layer (Inverts to Cold High-Contrast Monolithic Mode) */
+@media (min-width: 768px) {
+  .site-shell {
+    padding: 30px;
+  }
+}
+
 .site-shell.visor-active {
   filter: contrast(175%) brightness(95%) grayscale(100%);
   color: #ffffff;
@@ -54,21 +68,21 @@ body {
 }
 
 /* ==========================================================================
-   COMMAND CONSOLE & TERMINAL NAVIGATION (UNSQUASHED)
-   ========================================================================== */
+    NAVIGATION
+    ========================================================================== */
 
 .navbar {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   padding: 12px;
   border: 2px solid var(--border-color);
   background: #121216;
-  margin: 10px 0 35px 0; /* Clear spacing from page ceiling and content below */
+  margin: 10px 0 25px 0;
   box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
   position: relative;
+  flex-wrap: wrap;
 }
 
-/* Bureaucratic Header Tab Metatag */
 .navbar::before {
   content: "SYS_ROUTING // ALDERSYTH_DIRECTORY_MATRIX";
   position: absolute;
@@ -85,14 +99,18 @@ body {
   background: #1a1a22;
   border: 1px solid var(--border-color);
   color: var(--fg-primary);
-  padding: 12px 20px;
+  padding: 11px 18px;
   font-family: 'Courier New', Courier, monospace;
   font-size: 13px;
   font-weight: bold;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   cursor: pointer;
   user-select: none;
   transition: all 0.15s ease-in-out;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
 }
 
 .navbar button:hover {
@@ -100,9 +118,28 @@ body {
   border-color: var(--fg-accent);
   color: var(--bg);
   box-shadow: 0 0 8px var(--border-glow);
+  transform: translateY(-2px);
 }
 
-/* Visor Toggle Behavior Shifted to Distinct Control Node */
+.navbar button:focus {
+  outline: 2px solid var(--glitch-cyan);
+  outline-offset: 2px;
+}
+
+.navbar button.active {
+  background: var(--fg-accent);
+  color: var(--bg);
+  border-color: var(--fg-accent);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4), 0 0 12px var(--border-glow);
+  font-weight: 900;
+}
+
+.navbar button.active::before {
+  content: "▶ ";
+  font-size: 11px;
+  margin-right: 4px;
+}
+
 .navbar .visor-toggle {
   margin-left: auto;
   border: 1px solid var(--fg-accent);
@@ -115,17 +152,33 @@ body {
   color: var(--bg);
 }
 
-/* ==========================================================================
-   STRUCTURAL MECHANICS
-   ========================================================================== */
+@media (max-width: 767px) {
+  .navbar {
+    gap: 4px;
+  }
+  
+  .navbar button {
+    padding: 10px 12px;
+    font-size: 12px;
+    min-height: 44px;
+  }
+  
+  .navbar .visor-toggle {
+    margin-left: 4px;
+  }
+}
 
-/* The Mica Block Deficit Line */
+/* ==========================================================================
+    STRUCTURAL ELEMENTS
+    ========================================================================== */
+
 .mica-block {
   width: 100%;
   height: 6px;
   background: #1a1a22;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   border-bottom: 1px solid var(--border-color);
+  transition: all 0.3s ease;
 }
 
 .mica-block.thinning {
@@ -135,25 +188,27 @@ body {
 }
 
 .title {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   font-weight: 900;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
   letter-spacing: 1px;
   color: #ffffff;
   text-transform: uppercase;
   border-left: 4px solid var(--fg-accent);
   padding-left: 15px;
+  word-break: break-word;
 }
 
 /* ==========================================================================
-   PANEL ARCHITECTURE
-   ========================================================================== */
+    PANEL GRID & LAYOUT
+    ========================================================================== */
 
 .panel-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
   width: 100%;
+  margin-bottom: 20px;
 }
 
 .panel-grid.hidden {
@@ -163,10 +218,18 @@ body {
 .panel {
   background: var(--panel-bg);
   border: 2px solid var(--border-color);
-  padding: 24px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease;
+  min-height: 200px;
+}
+
+.panel:hover {
+  background: var(--panel-hover);
+  border-color: var(--fg-accent);
+  box-shadow: 0 4px 25px rgba(255, 144, 0, 0.1);
 }
 
 .panel.wide {
@@ -175,15 +238,15 @@ body {
 
 h3 {
   font-size: 0.95rem;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   letter-spacing: 1px;
   color: var(--fg-accent);
   border-bottom: 1px solid var(--border-color);
-  padding-bottom: 8px;
+  padding-bottom: 10px;
   text-transform: uppercase;
+  font-weight: bold;
 }
 
-/* Active System Audit Anomalies */
 #diagnosticsView .panel {
   border-color: var(--fg-accent);
   box-shadow: 0 0 15px var(--border-glow);
@@ -195,63 +258,163 @@ h3 {
 }
 
 /* ==========================================================================
-   TERMINAL FEEDS, INPUTS & CONTROLS
-   ========================================================================== */
+    METERS & DATA DISPLAY
+    ========================================================================== */
 
 .meterBlock {
   margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .meterBlock label {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   margin-bottom: 6px;
-  color: #8a8a93;
+  color: var(--fg-secondary);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
+  font-weight: bold;
 }
 
 .meter {
   border: 1px solid var(--border-color);
-  height: 14px;
+  height: 20px;
   background: #09090c;
-  margin-bottom: 16px;
   padding: 2px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .meter div {
   height: 100%;
-  background-color: var(--fg-accent);
+  background: linear-gradient(90deg, var(--fg-accent), #ffaa00);
   width: 0%;
   transition: width 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 6px;
+  font-size: 0.7rem;
+  color: var(--bg);
+  font-weight: bold;
+  min-width: 0;
 }
+
+.meter.critical div {
+  background: linear-gradient(90deg, var(--status-critical), #ff6b6b);
+}
+
+.meter.warning div {
+  background: linear-gradient(90deg, var(--status-warning), #fcd34d);
+}
+
+.meter.stable div {
+  background: linear-gradient(90deg, var(--status-stable), #86efac);
+}
+
+/* ==========================================================================
+    LOGS & TEXT AREAS
+    ========================================================================== */
 
 pre, .log {
   background: #020204;
   border: 1px solid var(--border-color);
-  padding: 16px;
+  padding: 14px;
   font-family: 'Courier New', Courier, monospace;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   overflow-y: auto;
   height: 200px;
   white-space: pre-wrap;
+  word-wrap: break-word;
   color: var(--fg-primary);
+  line-height: 1.5;
+  scroll-behavior: smooth;
 }
 
 .log {
-  border-left: 2px solid #3a3a42;
+  border-left: 3px solid var(--fg-accent);
   animation: desync-text 10s infinite alternate ease-in-out;
 }
 
-/* Stream Specific Context Output Tones */
-.log-line.critical { color: var(--glitch-red); font-weight: bold; }
-.log-line.warning { color: var(--fg-accent); }
-.log-line.system { color: #8a8a93; }
+pre::-webkit-scrollbar,
+.log::-webkit-scrollbar {
+  width: 8px;
+}
+
+pre::-webkit-scrollbar-track,
+.log::-webkit-scrollbar-track {
+  background: #020204;
+  border-left: 1px solid var(--border-color);
+}
+
+pre::-webkit-scrollbar-thumb,
+.log::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+}
+
+pre::-webkit-scrollbar-thumb:hover,
+.log::-webkit-scrollbar-thumb:hover {
+  background: var(--fg-accent);
+}
+
+.log-line {
+  margin-bottom: 8px;
+  padding: 6px;
+  border-left: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.log-line:hover {
+  background: rgba(255, 144, 0, 0.05);
+  border-left-color: var(--fg-accent);
+  padding-left: 8px;
+}
+
+.log-line.critical {
+  color: var(--status-critical);
+  font-weight: bold;
+  border-left-color: var(--status-critical);
+}
+
+.log-line.warning {
+  color: var(--status-warning);
+  border-left-color: var(--status-warning);
+}
+
+.log-line.system {
+  color: var(--fg-secondary);
+}
+
+.log-line.agent {
+  color: var(--glitch-cyan);
+}
+
+.log-line.command {
+  color: var(--fg-accent);
+  font-weight: bold;
+}
+
+.log-line.ledger {
+  color: #a78bfa;
+  font-style: italic;
+}
+
+.log-line.narrative {
+  color: #f0abfc;
+}
+
+/* ==========================================================================
+    BUTTONS & CONTROLS
+    ========================================================================== */
 
 .controls, .button-group, form {
   margin-bottom: 16px;
   display: flex;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -259,43 +422,64 @@ button {
   background: #14141a;
   border: 1px solid var(--border-color);
   color: var(--fg-primary);
-  padding: 8px 16px;
+  padding: 11px 16px;
   font-family: 'Courier New', Courier, monospace;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.15s ease;
+  font-size: 13px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
 }
 
 button:hover {
   background: var(--fg-primary);
   color: var(--bg);
   border-color: var(--fg-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(232, 232, 224, 0.2);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+button:focus {
+  outline: 2px solid var(--glitch-cyan);
+  outline-offset: 2px;
 }
 
 .validation-field {
   flex-grow: 1;
+  min-width: 200px;
   background: #020204;
   border: 1px solid var(--border-color);
   color: #ffffff;
-  padding: 10px;
+  padding: 11px;
   font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  min-height: 44px;
 }
 
 .validation-field:focus {
   outline: none;
   border-color: var(--fg-accent);
+  box-shadow: 0 0 8px rgba(255, 144, 0, 0.3);
 }
 
 .hint {
-  font-size: 0.75rem;
-  color: #5c5c64;
-  margin-top: 8px;
-  line-height: 1.4;
+  font-size: 0.8rem;
+  color: var(--fg-secondary);
+  margin-top: 12px;
+  line-height: 1.5;
 }
 
 /* ==========================================================================
-   POI MATRICES & REGISTERED AGENTS
-   ========================================================================== */
+    POI REGISTRY & AGENT CARDS
+    ========================================================================== */
 
 .poi-registry {
   display: flex;
@@ -312,32 +496,97 @@ button:hover {
   background: #020204;
   border: 1px solid var(--border-color);
   font-size: 0.85rem;
+  transition: all 0.2s ease;
 }
 
-.node-id { font-weight: bold; color: var(--fg-accent); }
-.node-loc { flex-grow: 1; margin-left: 20px; color: var(--fg-primary); }
-.node-status { font-size: 0.75rem; color: #787882; text-transform: uppercase; }
+.poi-node:hover {
+  background: #0a0a0f;
+  border-color: var(--fg-accent);
+  box-shadow: 0 0 8px rgba(255, 144, 0, 0.15);
+}
+
+.node-id {
+  font-weight: bold;
+  color: var(--fg-accent);
+  min-width: 80px;
+}
+
+.node-loc {
+  flex-grow: 1;
+  margin-left: 20px;
+  color: var(--fg-primary);
+}
+
+.node-status {
+  font-size: 0.75rem;
+  color: var(--fg-secondary);
+  text-transform: uppercase;
+  text-align: right;
+  min-width: 140px;
+}
+
+.stableGlow {
+  border-left: 4px solid var(--status-stable);
+}
+
+.warningPulse {
+  border-left: 4px solid var(--status-critical);
+  animation: pulse-glow 2s infinite;
+}
+
+.glitch-hover:hover {
+  animation: mica-jitter 0.1s infinite;
+  border-color: var(--glitch-red);
+}
 
 .agentCard {
   border: 1px dashed var(--border-color);
   padding: 20px;
   margin-bottom: 12px;
   background: #020204;
+  transition: all 0.2s ease;
+}
+
+.agentCard:hover {
+  border-style: solid;
+  background: #0a0a0f;
+  box-shadow: 0 0 8px rgba(255, 144, 0, 0.1);
 }
 
 .agentCard button {
   margin-top: 14px;
 }
 
-/* Functional Accents from the Iron Journal */
-.stableGlow { border-left: 4px solid #4361ee; }
-.warningPulse { border-left: 4px solid var(--glitch-red); animation: pulse-glow 2s infinite; }
-.glitch-hover:hover { animation: mica-jitter 0.1s infinite; border-color: var(--glitch-red); }
-.ledger-flash { animation: flash-white 0.5s ease-out forwards; }
+/* ==========================================================================
+    MATRIX GRID
+    ========================================================================== */
+
+.matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+  max-width: 160px;
+  margin-top: 10px;
+}
+
+.matrix-grid span {
+  width: 8px;
+  height: 8px;
+  background: #16161c;
+  animation: sector-flicker 1.5s infinite ease-in-out;
+}
+
+.matrix-grid span:nth-child(3n) {
+  animation: sector-flicker 1.5s infinite ease-in-out;
+}
+
+.matrix-grid span:nth-child(7n) {
+  animation: sector-flicker 2.2s infinite ease-in-out;
+}
 
 /* ==========================================================================
-   ANIMATION MATRIX
-   ========================================================================== */
+    ANIMATIONS
+    ========================================================================== */
 
 @keyframes crt-flicker {
   0% { opacity: 0.99; }
@@ -377,16 +626,32 @@ button:hover {
   0% { background: #ffffff; border-color: #ffffff; color: #000000; }
   100% { background: var(--panel-bg); border-color: var(--border-color); }
 }
+
+@keyframes sector-flicker {
+  0%, 100% { background: #16161c; }
+  50% { background: rgba(255, 144, 0, 0.4); }
+}
+
+@keyframes ledger-flash {
+  0% { background: #ffffff; border-color: #ffffff; color: #000000; }
+  100% { background: var(--panel-bg); border-color: var(--border-color); color: var(--fg-primary); }
+}
+
+@keyframes telemetry-pulse {
+  0%, 100% { opacity: 0.4; color: var(--glitch-red); }
+  50% { opacity: 1; color: var(--fg-accent); }
+}
+
 /* ==========================================================================
-   TERMINAL FOOTER // BUREAUCRATIC COMPLIANCE BAR
-   ========================================================================== */
+    FOOTER
+    ========================================================================== */
 
 .terminal-footer {
   margin-top: 50px;
   border-top: 2px dashed var(--border-color);
   padding-top: 20px;
   font-size: 0.75rem;
-  color: #5c5c64;
+  color: var(--fg-secondary);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -399,10 +664,8 @@ button:hover {
   font-weight: bold;
   border-bottom: 1px solid rgba(42, 42, 46, 0.4);
   padding-bottom: 8px;
-}
-
-.footer-meta span {
-  position: relative;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .footer-meta span::before {
@@ -422,88 +685,138 @@ button:hover {
   animation: telemetry-pulse 2s infinite ease-in-out;
 }
 
-@keyframes telemetry-pulse {
-  0%, 100% { opacity: 0.4; color: var(--glitch-red); }
-  50% { opacity: 1; color: var(--fg-accent); }
-}
-/* Latched Mainframe Selector Switch */
-.navbar button.active {
-  background: var(--fg-accent);
-  color: var(--bg);
-  border-color: var(--fg-accent);
-  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4);
-}
-.navbar button.active::before {
-  content: "▶ ";
-  font-size: 11px;
-}
-/* Custom Monospace Container Tracks */
-pre::-webkit-scrollbar,
-.log::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-pre::-webkit-scrollbar-track,
-.log::-webkit-scrollbar-track {
-  background: #020204;
-  border-left: 1px solid var(--border-color);
-}
-pre::-webkit-scrollbar-thumb,
-.log::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-}
-pre::-webkit-scrollbar-thumb:hover,
-.log::-webkit-scrollbar-thumb:hover {
-  background: var(--fg-accent);
-}
-/* Bureaucratic Processing Stamps */
-.poi-node {
-  position: relative;
-  overflow: hidden;
+/* ==========================================================================
+    RESPONSIVE DESIGN
+    ========================================================================== */
+
+@media (max-width: 767px) {
+  .site-shell {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+
+  .panel-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .panel {
+    min-height: 160px;
+    padding: 16px;
+  }
+
+  pre, .log {
+    font-size: 0.85rem;
+    height: 150px;
+    padding: 12px;
+  }
+
+  .poi-node {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .node-loc {
+    margin-left: 0;
+  }
+
+  .node-status {
+    min-width: auto;
+    text-align: left;
+  }
+
+  .matrix-grid {
+    max-width: 120px;
+  }
+
+  .controls, .button-group {
+    gap: 8px;
+  }
+
+  button {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+
+  .navbar {
+    gap: 4px;
+    margin: 8px 0 20px 0;
+  }
+
+  .navbar button {
+    padding: 10px 12px;
+    font-size: 11px;
+  }
 }
 
-.poi-node::after {
-  position: absolute;
-  right: 140px;
-  top: 50%;
-  transform: translateY(-50%) rotate(-8deg);
-  font-size: 0.65rem;
-  font-weight: bold;
-  padding: 2px 6px;
-  letter-spacing: 1px;
-  opacity: 0.25;
+@media (max-width: 480px) {
+  .site-shell {
+    padding: 12px;
+  }
+
+  .title {
+    font-size: 1.2rem;
+    padding-left: 12px;
+    border-left: 3px solid var(--fg-accent);
+  }
+
+  .panel {
+    padding: 14px;
+    min-height: 140px;
+  }
+
+  pre, .log {
+    height: 120px;
+    padding: 10px;
+    font-size: 0.8rem;
+  }
+
+  .navbar button {
+    padding: 9px 10px;
+    font-size: 11px;
+    min-height: 40px;
+  }
+
+  button {
+    padding: 9px 12px;
+    font-size: 11px;
+    min-height: 40px;
+  }
+
+  .meterBlock {
+    gap: 12px;
+  }
+
+  .meterBlock label {
+    font-size: 0.75rem;
+  }
+
+  .meter {
+    height: 18px;
+  }
+
+  .validation-field {
+    min-height: 40px;
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .node-id {
+    min-width: 60px;
+  }
+
+  .footer-meta {
+    flex-direction: column;
+    gap: 6px;
+  }
 }
 
-.poi-node.stableGlow::after {
-  content: "FILED & RECONCILED";
-  border: 1px solid #4361ee;
-  color: #4361ee;
-}
-
-.poi-node.warningPulse::after {
-  content: "OMISSION DRIFT";
-  border: 1px solid var(--glitch-red);
-  color: var(--glitch-red);
-}
-.matrix-grid {
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 4px;
-  max-width: 160px;
-  margin-top: 10px;
-}
-
-.matrix-grid span {
-  width: 8px;
-  height: 8px;
-  background: #16161c;
-}
-
-/* Simulate hardware data register reading cycles */
-.matrix-grid span:nth-child(3n) { animation: sector-flicker 1.5s infinite ease-in-out; }
-.matrix-grid span:nth-child(7n) { animation: sector-flicker 2.2s infinite ease-in-out; }
-
-@keyframes sector-flicker {
-  0%, 100% { background: #16161c; }
-  50% { background: rgba(255, 144, 0, 0.4); }
+/* Ledger flash animation for panels */
+.panel.ledger-flash {
+  animation: ledger-flash 0.4s ease-out forwards;
 }

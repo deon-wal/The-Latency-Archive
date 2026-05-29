@@ -42,13 +42,13 @@
 
       <div class="meterBlock">
         <label>Consensus Stability Baseline</label>
-        <div class="meter"><div id="stabilityBar"></div></div>
+        <div class="meter"><div id="stabilityBar"><span id="stabilityVal">0%</span></div></div>
 
         <label>Anomalous Narrative Leakage</label>
-        <div class="meter"><div id="corruptionBar"></div></div>
+        <div class="meter"><div id="corruptionBar"><span id="corruptionVal">0%</span></div></div>
 
         <label>Bureaucratic Reality Coherence</label>
-        <div class="meter"><div id="coherenceBar"></div></div>
+        <div class="meter"><div id="coherenceBar"><span id="coherenceVal">0%</span></div></div>
       </div>
     </div>
 
@@ -442,9 +442,25 @@ socket.on('world:update', w => {
   if (worldDisplay) worldDisplay.innerText = formatted;
   if (copyDisplay) copyDisplay.innerText = formatted;
 
-  if (document.getElementById('stabilityBar')) document.getElementById('stabilityBar').style.width = w.stability + '%';
-  if (document.getElementById('corruptionBar')) document.getElementById('corruptionBar').style.width = w.corruption + '%';
-  if (document.getElementById('coherenceBar')) document.getElementById('coherenceBar').style.width = w.coherence + '%';
+  const stability = Math.round(w.stability);
+  const corruption = Math.round(w.corruption);
+  const coherence = Math.round(w.coherence);
+
+  if (document.getElementById('stabilityBar')) {
+    document.getElementById('stabilityBar').style.width = w.stability + '%';
+    const valEl = document.getElementById('stabilityVal');
+    if (valEl) valEl.textContent = stability + '%';
+  }
+  if (document.getElementById('corruptionBar')) {
+    document.getElementById('corruptionBar').style.width = w.corruption + '%';
+    const valEl = document.getElementById('corruptionVal');
+    if (valEl) valEl.textContent = corruption + '%';
+  }
+  if (document.getElementById('coherenceBar')) {
+    document.getElementById('coherenceBar').style.width = w.coherence + '%';
+    const valEl = document.getElementById('coherenceVal');
+    if (valEl) valEl.textContent = coherence + '%';
+  }
 
   setMicaState(w.stability < 30);
   
